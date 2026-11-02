@@ -12,11 +12,7 @@ app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE='Lax', S
 
 import hmac
 
-ADMIN_EMAIL = os.getenv(
-    "ADMIN_EMAIL",
-    "sahayasathish60@gmail.com"
-).strip().lower()
-
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "sahayasathish60@gmail.com").strip().lower()
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "Sathryx@2026")
 
 @app.route("/admin/login", methods=["GET", "POST"])
@@ -50,19 +46,30 @@ SUPABASE_KEY = os.getenv('SUPABASE_SERVICE_ROLE_KEY','')
 class StoreError(Exception): pass
 
 def sb_headers():
-    if not SUPABASE_URL or not SUPABASE_KEY: raise StoreError('Supabase is not configured. Add SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to .env.')
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")    return {'apikey':SUPABASE_KEY,'Authorization':f'Bearer {SUPABASE_KEY}','Content-Type':'application/json','Prefer':'return=representation'}
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        raise StoreError(
+            "Supabase is not configured. Add SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY."
+        )
 
+    return {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
 def sb_request(method, table, *, params=None, payload=None):
     r=requests.request(method, f'{SUPABASE_URL}/rest/v1/{table}', headers=sb_headers(), params=params, json=payload, timeout=20)
     if not r.ok: raise StoreError(f'Database request failed ({r.status_code}): {r.text[:350]}')
     return r.json() if r.text else []
 
-def admin_required(fn):    @wraps(fn)
+def admin_required(fn):
+    @wraps(fn)
     def inner(*args, **kwargs):
         if session.get("admin_logged_in") is not True:
             return redirect(url_for("admin_login"))
+
         return fn(*args, **kwargs)
+
     return inner
 
 @app.get('/')
@@ -165,4 +172,9 @@ def update_status(student_id):
 @app.get('/health')
 def health(): return jsonify(status='ok',supabase_configured=bool(SUPABASE_URL and SUPABASE_KEY),ai_configured=bool(os.getenv('OPENROUTER_API_KEY') or os.getenv('GEMINI_API_KEY')))
 
-if __name__=='__main__': app.run(host='0.0.0.0',port=int(os.getenv('PORT',5000)),debug=os.getenv('FLASK_DEBUG','false').lower()=='true')
+if __name__ == "__main__":
+    app.run(
+        host="0.0.0.0",
+        port=int(os.getenv("PORT", 5000)),
+        debug=False
+    )
