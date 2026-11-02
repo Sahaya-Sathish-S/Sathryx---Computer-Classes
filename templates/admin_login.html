@@ -1,0 +1,141 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SATHRYX Admin Login</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+body {
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,#f7f5ff,#fff7fb,#effaff);
+    font-family:'DM Sans',sans-serif;
+    padding:20px;
+}
+
+.login {
+    width:min(420px,100%);
+    padding:35px;
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(20px);
+    border:1px solid #ebe6fa;
+    border-radius:24px;
+    box-shadow:0 25px 80px #5142a522;
+}
+
+.login h1 {
+    font:800 27px Manrope,sans-serif;
+    color:#17203b;
+}
+
+.login p {
+    color:#7b8498;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.login label {
+    display:grid;
+    gap:8px;
+    margin:19px 0;
+    font-size:12px;
+    font-weight:700;
+    color:#555f79;
+}
+
+.login input {
+    width:100%;
+    padding:14px;
+    border:1px solid #e5e6ef;
+    border-radius:11px;
+    outline:none;
+    transition:.25s;
+}
+
+.login input:focus {
+    border-color:#9874f4;
+    box-shadow:0 0 0 4px #9874f422;
+}
+
+.login button {
+    width:100%;
+    margin-top:10px;
+}
+
+.flash {
+    color:#c04464;
+    font-size:12px;
+    margin-top:12px;
+}
+
+.login-back {
+    text-align:center;
+    margin-top:20px;
+}
+
+@media(max-width:480px) {
+    .login {
+        padding:24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<form class="login" method="POST">
+
+<a class="brand" href="/">
+    <img src="{{ url_for('static',filename='img/sathryx-logo.webp') }}" alt="SATHRYX">
+    <span>SATHRYX
+        <small>ADMIN PORTAL</small>
+    </span>
+</a>
+
+<h1>Welcome back.</h1>
+
+<p>Sign in to manage SATHRYX Christmas Computer Classes.</p>
+
+{% with messages=get_flashed_messages() %}
+{% for m in messages %}
+<div class="flash">{{ m }}</div>
+{% endfor %}
+{% endwith %}
+
+<label>
+Admin email
+<input
+    name="email"
+    type="email"
+    value="sahayasathish60@gmail.com"
+    required
+    autocomplete="username">
+</label>
+
+<label>
+Password
+<input
+    name="password"
+    type="password"
+    required
+    placeholder="Enter admin password"
+    autocomplete="current-password">
+</label>
+
+<button class="btn primary" type="submit">
+Sign in →
+</button>
+
+<div class="login-back">
+<a href="/">← Back to website</a>
+</div>
+
+</form>
+
+</body>
+</html>
